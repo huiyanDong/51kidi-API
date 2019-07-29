@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "179ec443-0a42-478c-8249-4a40120fa816",
+		"name": "Database",
+		"description": "123456",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "按列查询",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2fee2e50-f994-4792-a712-bae1fa118910",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reg?_fields=mobile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reg"
+					],
+					"query": [
+						{
+							"key": "_fields",
+							"value": "mobile"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "按条件查询",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2fee2e50-f994-4792-a712-bae1fa118910",
+						"exec": [
+							"responseData = JSON.parse(responseBody)\r",
+							"//获取到json返回的内容\r",
+							"var text = responseData[0];\r",
+							"//获取当前是否有id\r",
+							"if(text != null){\r",
+							"//判断当前手机号是否被注册 ，如果不为null说明手机号已经注册   \r",
+							"    tests[\"当前手机号已经注册\"] = true === true;\r",
+							"    var key = responseData[0].mobile;\r",
+							"    //将id复制给key\r",
+							"    pm.environment.set(\"IDkey\",key);\r",
+							"    //设置id为环境变量\r",
+							"    postman.setNextRequest(\"update-sql\");\r",
+							"    //执行更新手机号的接口，使手机号为未注册的手机号\r",
+							"}\r",
+							"else{\r",
+							"    tests[\"当前手机号为未注册账号\"] = true === true;\r",
+							"    postman.setNextRequest(\"next-api\")\r",
+							"    //当前手机号未注册可以直接执行正常手机号登录注册流程\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reg?_where=(mobile,eq,13301010226)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reg"
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(mobile,eq,13301010226)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "按照id查",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2fee2e50-f994-4792-a712-bae1fa118910",
+						"exec": [
+							"responseData = JSON.parse(responseBody)\r",
+							"//获取到json返回的内容\r",
+							"var text = responseData[0];\r",
+							"//获取当前是否有id\r",
+							"if(text != null){\r",
+							"//判断当前手机号是否被注册 ，如果不为null说明手机号已经注册   \r",
+							"    tests[\"当前手机号已经注册\"] = true === true;\r",
+							"    var key = responseData[0].mobile;\r",
+							"    //将id复制给key\r",
+							"    pm.environment.set(\"IDkey\",key);\r",
+							"    //设置id为环境变量\r",
+							"    postman.setNextRequest(\"update-sql\");\r",
+							"    //执行更新手机号的接口，使手机号为未注册的手机号\r",
+							"}\r",
+							"else{\r",
+							"    tests[\"当前手机号为未注册账号\"] = true === true;\r",
+							"    postman.setNextRequest(\"next-api\")\r",
+							"    //当前手机号未注册可以直接执行正常手机号登录注册流程\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/reg/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reg",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改数据",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mobile\": \"19000009999\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reg/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reg",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增数据",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mobile\": \"19048000006\",\n    \"password\": \"111111\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除数据",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 4,\n    \"mobile\": \"19048000006\",\n    \"password\": \"111111\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/reg/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"reg",
+						"4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
