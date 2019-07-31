@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "4ea39b77-d677-4f57-a52c-26e46973e8b6",
 		"name": "51kid",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
@@ -42,19 +42,7 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": {
-									"raw": "http://localhost:3000/api/reg/",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"reg",
-										""
-									]
-								}
+								"url": "http://localhost:3000/api/reg/"
 							},
 							"response": []
 						},
@@ -195,18 +183,7 @@
 									"mode": "raw",
 									"raw": "{\n   \"mobile\":{{mobile}},\n   \"password\":111111\n}"
 								},
-								"url": {
-									"raw": "http://localhost:3000/api/reg",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"reg"
-									]
-								}
+								"url": "http://localhost:3000/api/reg"
 							},
 							"response": []
 						},
@@ -257,20 +234,7 @@
 										}
 									]
 								},
-								"url": {
-									"raw": "http://sms.51talk.com/Admin/Login/user_login",
-									"protocol": "http",
-									"host": [
-										"sms",
-										"51talk",
-										"com"
-									],
-									"path": [
-										"Admin",
-										"Login",
-										"user_login"
-									]
-								}
+								"url": "http://sms.51talk.com/Admin/Login/user_login"
 							},
 							"response": []
 						},
@@ -386,8 +350,11 @@
 											"pm.test(\"remindMsg is 登录成功\", function () {",
 											"    pm.expect(jsonData.res.remindMsg).to.eql(\"登录成功\");",
 											"    pm.environment.set(\"talk_token\",jsonData.res.talkToken);",
+											"    pm.environment.set(\"userId\",jsonData.res.userId);",
 											"    pm.environment.unset(\"code\");",
 											"});",
+											"",
+											"",
 											""
 										],
 										"type": "text/javascript"
@@ -505,7 +472,7 @@
 											"     * 注意， 此处设置环境变量code，注意清除 ",
 											"     * ******************************************",
 											"     * *****************************************/",
-											"    pm.environment.set(\"passwd\", passwd);",
+											"    pm.environment.set(\"regPassword\", passwd);",
 											"",
 											"}",
 											""
@@ -569,19 +536,146 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"password\":{{passwd}}\n}"
+									"raw": "{\n    \"password\":{{regPassword}}\n}"
+								},
+								"url": "http://localhost:3000/api/reg/{{len}}"
+							},
+							"response": []
+						},
+						{
+							"name": "用户名密码登录",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "170a629b-a10d-4aeb-b2f6-f8852d077b23",
+										"exec": [
+											"// 密码加密",
+											"buyPassword=pm.environment.get(\"regPassword\");",
+											"pm.environment.set(\"MRegPassword\",CryptoJS.MD5(buyPassword).toString());"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "bf2350f0-d4b9-4331-9ac8-c438df9d6d26",
+										"exec": [
+											"var jsonData = pm.response.json();",
+											"",
+											"pm.test(\"code is 10000\", function () {",
+											"    pm.expect(jsonData.code).to.eql(10000);",
+											"});",
+											"",
+											"pm.test(\"remindMsg is 登录成功\", function () {",
+											"    pm.expect(jsonData.res.remindMsg).to.eql(\"登录成功\");",
+											"    pm.environment.set(\"talk_token\",jsonData.res.talkToken);",
+											"    pm.environment.set(\"userId\",jsonData.res.userId);",
+											"    pm.environment.unset(\"code\");",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "appkey",
+											"value": "{{appkey}}",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "from",
+											"value": "{{from}}",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "{{MRegPassword}}",
+											"type": "text"
+										},
+										{
+											"key": "timestamp",
+											"value": "{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "token",
+											"value": "{{talk_token}}",
+											"type": "text"
+										},
+										{
+											"key": "tsign",
+											"value": "{{tsign}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "{{regUsername}}",
+											"type": "text"
+										},
+										{
+											"key": "version",
+											"value": "{{version}}",
+											"type": "text"
+										}
+									]
 								},
 								"url": {
-									"raw": "http://localhost:3000/api/reg/{{len}}",
-									"protocol": "http",
+									"raw": "{{host}}/Login/usernameLogin?version={{version}}&channel={{channel}}&systemVer={{systemVer}}&deviceId={{deviceId}}&deviceType={{deviceType}}&phoneType={{phoneType}}",
 									"host": [
-										"localhost"
+										"{{host}}"
 									],
-									"port": "3000",
 									"path": [
-										"api",
-										"reg",
-										"{{len}}"
+										"Login",
+										"usernameLogin"
+									],
+									"query": [
+										{
+											"key": "version",
+											"value": "{{version}}"
+										},
+										{
+											"key": "channel",
+											"value": "{{channel}}"
+										},
+										{
+											"key": "systemVer",
+											"value": "{{systemVer}}"
+										},
+										{
+											"key": "deviceId",
+											"value": "{{deviceId}}"
+										},
+										{
+											"key": "deviceType",
+											"value": "{{deviceType}}"
+										},
+										{
+											"key": "phoneType",
+											"value": "{{phoneType}}"
+										}
 									]
 								}
 							},
@@ -8793,350 +8887,13 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "修改教材",
-			"item": [
-				{
-					"name": "用户登录",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "85cdaab6-dfff-4f71-90b1-7227b314e25e",
-								"exec": [
-									"// 密码加密",
-									"//pm.environment.set(\"password\",CryptoJS.MD5(data.openClassPassword).toString());",
-									"openClassPassword=pm.environment.get(\"openClassPassword\");",
-									"pm.environment.set(\"MopenClassUser\",CryptoJS.MD5(openClassPassword).toString());"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "088ae31d-6d41-499c-8bb1-068784d0ff8e",
-								"exec": [
-									"",
-									"//返回成功，返回码是200",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"jsonData=pm.response.json();",
-									"",
-									"//验证返回的code是1",
-									"pm.test(\"返回的code是1\", function () {",
-									"    pm.expect(jsonData.code).to.eql(1);",
-									"    //将token和学生ID写到环境变量",
-									"    pm.environment.set(\"talkToken\", jsonData.res.talkToken);",
-									"    pm.environment.set(\"userId\",jsonData.res.userId);",
-									"});",
-									"",
-									"",
-									"//清除密码",
-									"pm.environment.unset(\"password1\");"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "appkey",
-									"value": "{{appkey}}",
-									"type": "text"
-								},
-								{
-									"key": "client_id",
-									"value": "{{client_id}}",
-									"type": "text"
-								},
-								{
-									"key": "from",
-									"value": "{{from}}",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "{{MopenClassUser}}",
-									"type": "text"
-								},
-								{
-									"key": "timestamp",
-									"value": "{{timestamp}}",
-									"type": "text"
-								},
-								{
-									"key": "tsign",
-									"value": "{{tsign}}",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "{{openClassUser}}",
-									"type": "text"
-								},
-								{
-									"key": "version",
-									"value": "{{version}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}/User/userLogin?version={{version}}&channel={{channel}}&systemVer={{systemVer}}&deviceId={{deviceId}}&deviceType={{deviceType}}&phoneType={{phoneType}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"User",
-								"userLogin"
-							],
-							"query": [
-								{
-									"key": "version",
-									"value": "{{version}}"
-								},
-								{
-									"key": "channel",
-									"value": "{{channel}}"
-								},
-								{
-									"key": "systemVer",
-									"value": "{{systemVer}}"
-								},
-								{
-									"key": "deviceId",
-									"value": "{{deviceId}}"
-								},
-								{
-									"key": "deviceType",
-									"value": "{{deviceType}}"
-								},
-								{
-									"key": "phoneType",
-									"value": "{{phoneType}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "修改教材",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "85cdaab6-dfff-4f71-90b1-7227b314e25e",
-								"exec": [
-									"// 密码加密",
-									"//pm.environment.set(\"password\",CryptoJS.MD5(data.openClassPassword).toString());",
-									"openClassPassword=pm.environment.get(\"openClassPassword\");",
-									"pm.environment.set(\"MopenClassUser\",CryptoJS.MD5(openClassPassword).toString());"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "088ae31d-6d41-499c-8bb1-068784d0ff8e",
-								"exec": [
-									"",
-									"//返回成功，返回码是200",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"jsonData=pm.response.json();",
-									"",
-									"//验证返回的code是1",
-									"pm.test(\"返回的code是1\", function () {",
-									"    pm.expect(jsonData.code).to.eql(1);",
-									"    //将token和学生ID写到环境变量",
-									"    pm.environment.set(\"talkToken\", jsonData.res.talkToken);",
-									"    pm.environment.set(\"userId\",jsonData.res.userId);",
-									"});",
-									"",
-									"",
-									"//清除密码",
-									"pm.environment.unset(\"password1\");"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/x-www-form-urlencoded"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "appkey",
-									"value": "{{appkey}}",
-									"type": "text"
-								},
-								{
-									"key": "parentId",
-									"value": "772111",
-									"type": "text"
-								},
-								{
-									"key": "talk_token",
-									"value": "{{talkToken}}\t",
-									"type": "text"
-								},
-								{
-									"key": "timestamp",
-									"value": "{{timestamp}}",
-									"type": "text"
-								},
-								{
-									"key": "tsign",
-									"value": "{{tsign}}",
-									"type": "text"
-								},
-								{
-									"key": "type",
-									"value": "zx",
-									"type": "text"
-								},
-								{
-									"key": "userId",
-									"value": "800028315",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}/User/getCourser?version={{version}}&channel={{channel}}&systemVer={{systemVer}}&deviceId={{deviceId}}&deviceType={{deviceType}}&phoneType={{phoneType}}",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"User",
-								"getCourser"
-							],
-							"query": [
-								{
-									"key": "version",
-									"value": "{{version}}"
-								},
-								{
-									"key": "channel",
-									"value": "{{channel}}"
-								},
-								{
-									"key": "systemVer",
-									"value": "{{systemVer}}"
-								},
-								{
-									"key": "deviceId",
-									"value": "{{deviceId}}"
-								},
-								{
-									"key": "deviceType",
-									"value": "{{deviceType}}"
-								},
-								{
-									"key": "phoneType",
-									"value": "{{phoneType}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "java修改",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "appoint_id",
-									"value": "51006952",
-									"type": "text"
-								},
-								{
-									"key": "book_type",
-									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "operator_id",
-									"value": "120",
-									"type": "text"
-								},
-								{
-									"key": "timestamp",
-									"value": "1563243215",
-									"type": "text"
-								},
-								{
-									"key": "appkey",
-									"value": "'dddd'",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://172.16.16.97/talkplatform_appointone_consumer/v2/appoint/book_type/update_book_type",
-							"protocol": "http",
-							"host": [
-								"172",
-								"16",
-								"16",
-								"97"
-							],
-							"path": [
-								"talkplatform_appointone_consumer",
-								"v2",
-								"appoint",
-								"book_type",
-								"update_book_type"
-							]
-						}
-					},
-					"response": []
-				}
-			]
 		}
 	],
 	"auth": {
 		"type": "digest",
-		"digest": [
-			{
-				"key": "algorithm",
-				"value": "MD5",
-				"type": "string"
-			}
-		]
+		"digest": {
+			"algorithm": "MD5"
+		}
 	},
 	"event": [
 		{
