@@ -1,8 +1,7 @@
 {
 	"info": {
+		"_postman_id": "fae68471-3f3a-40e7-8ec0-89fa3a18b8fe",
 		"name": "51kid",
-		"_postman_id": "e36445ef-34d3-e534-0f61-7d6d23c8c985",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -13,62 +12,12 @@
 					"name": "注册",
 					"item": [
 						{
-							"name": "读数据库用户名",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"type": "text/javascript",
-										"exec": [
-											"responseData = JSON.parse(responseBody)\r",
-											"var len=responseData.length-1;\r",
-											"console.log(len);\r",
-											"pm.environment.set(\"len\",len+1);\r",
-											"var text = responseData[len];\r",
-											"if(text !== null){\r",
-											"    var mobile = text.mobile;\r",
-											"    var password = text.password;\r",
-											"    console.log(mobile);\r",
-											"    pm.environment.set(\"regUsername\",mobile);\r",
-											"    pm.environment.set(\"regPassword\",password);\r",
-											"}\r",
-											"else{\r",
-											"    tests[\"当前数据库里手机号为空，请填写!\"] = true === true;\r",
-											"}"
-										]
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "http://localhost:3000/api/reg/",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"reg",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "发送验证码",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
-										"type": "text/javascript",
+										"id": "622df30b-7d9d-4bb8-a17a-fed32b85ed04",
 										"exec": [
 											"var jsonData = pm.response.json();",
 											"",
@@ -83,13 +32,27 @@
 											"{",
 											"    pm.expect(jsonData.res.is_new_mobile).to.eql(1);",
 											"    tel=pm.environment.get(\"regUsername\");",
+											"    //保存下一个注册的数据",
 											"    mob=(Number(tel)+1).toString();",
-											"    pm.environment.set(\"mobile\",mob);",
+											"   // pm.environment.set(\"mobile\",mob);",
+											"    pm.globals.set(\"regUser\", mob);",
 											"});",
 											"",
 											"",
 											""
-										]
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a2c5e603-4884-48ae-a943-d30fcd5a0d8b",
+										"exec": [
+											"temp=pm.globals.get(\"regUser\");",
+											"pm.environment.set(\"regUsername\",temp );"
+										],
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -167,37 +130,6 @@
 											"key": "phoneType",
 											"value": "{{phoneType}}"
 										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "存储下一个用户数据",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n   \"mobile\":{{mobile}},\n   \"password\":111111\n}"
-								},
-								"url": {
-									"raw": "http://localhost:3000/api/reg",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"reg"
 									]
 								}
 							},
@@ -319,10 +251,6 @@
 										"disabled": true
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://sms.51talk.com/Admin/SendSms/index?send_time=&mobile={{regUsername}}&sms_id=",
 									"protocol": "http",
@@ -510,10 +438,6 @@
 										"disabled": true
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
 								"url": {
 									"raw": "http://sms.51talk.com/Admin/SendSms/index?send_time=&mobile={{regUsername}}&sms_id=",
 									"protocol": "http",
@@ -546,44 +470,12 @@
 							"response": []
 						},
 						{
-							"name": "将初始密码写入数据库",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"password\":{{regPassword}}\n}"
-								},
-								"url": {
-									"raw": "http://localhost:3000/api/reg/{{len}}",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"api",
-										"reg",
-										"{{len}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "用户名密码登录",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
-										"type": "text/javascript",
+										"id": "7834dedb-f84f-4f74-a649-d8b095186e58",
 										"exec": [
 											"var jsonData = pm.response.json();",
 											"",
@@ -596,22 +488,26 @@
 											"    pm.environment.set(\"talk_token\",jsonData.res.talkToken);",
 											"    pm.environment.set(\"userId\",jsonData.res.userId);",
 											"    pm.environment.unset(\"code\");",
+											"    //将下一个数据保存到当前注册用户中",
+											"    //pm.environment.set(\"regUsername\",mobile);",
 											"});",
 											"",
 											"",
 											""
-										]
+										],
+										"type": "text/javascript"
 									}
 								},
 								{
 									"listen": "prerequest",
 									"script": {
-										"type": "text/javascript",
+										"id": "96a672d7-490e-4197-a868-7077cd8990bc",
 										"exec": [
 											"// 密码加密",
 											"buyPassword=pm.environment.get(\"regPassword\");",
 											"pm.environment.set(\"MRegPassword\",CryptoJS.MD5(buyPassword).toString());"
-										]
+										],
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -1597,7 +1493,6 @@
 				},
 				{
 					"name": "体验课预约和展示",
-					"description": "选择体验课时间，进行预约",
 					"item": [
 						{
 							"name": "获取体验课7天日期",
@@ -2418,6 +2313,7 @@
 							"response": []
 						}
 					],
+					"description": "选择体验课时间，进行预约",
 					"_postman_isSubFolder": true
 				}
 			]
@@ -4093,21 +3989,6 @@
 										"value": "application/x-www-form-urlencoded"
 									}
 								],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "username",
-											"value": "17733330002",
-											"type": "text"
-										},
-										{
-											"key": "password",
-											"value": "21212",
-											"type": "text"
-										}
-									]
-								},
 								"url": {
 									"raw": "{{host}}/Schedule/getMyLessons?tsign={{tsign}}&talk_token={{talk_token}}&phoneType={{phoneType}}&deviceType={{deviceType}}&version={{version}}&deviceId={{deviceId}}&userId={{userId}}",
 									"host": [
@@ -4592,7 +4473,6 @@
 					},
 					"response": [
 						{
-							"id": "420800da-a8b2-4ce8-9727-a0e36cf4aace",
 							"name": "首页- 获取首页约课轮播信息",
 							"originalRequest": {
 								"method": "POST",
@@ -4669,7 +4549,6 @@
 							"status": "OK",
 							"code": 200,
 							"_postman_previewlanguage": "JSON",
-							"_postman_previewtype": "html",
 							"header": [
 								{
 									"key": "Server",
@@ -5659,33 +5538,27 @@
 									"query": [
 										{
 											"key": "version",
-											"value": "{{version}}",
-											"equals": true
+											"value": "{{version}}"
 										},
 										{
 											"key": "channel",
-											"value": "{{channel}}",
-											"equals": true
+											"value": "{{channel}}"
 										},
 										{
 											"key": "systemVer",
-											"value": "{{systemVer}}",
-											"equals": true
+											"value": "{{systemVer}}"
 										},
 										{
 											"key": "deviceId",
-											"value": "{{deviceId}}",
-											"equals": true
+											"value": "{{deviceId}}"
 										},
 										{
 											"key": "deviceType",
-											"value": "{{deviceType}}",
-											"equals": true
+											"value": "{{deviceType}}"
 										},
 										{
 											"key": "phoneType",
-											"value": "{{phoneType}}",
-											"equals": true
+											"value": "{{phoneType}}"
 										}
 									]
 								}
@@ -5940,7 +5813,6 @@
 							},
 							"response": [
 								{
-									"id": "72dcac2d-444c-494b-8764-20c48bec033e",
 									"name": "筛选免费公开课",
 									"originalRequest": {
 										"method": "POST",
@@ -6057,7 +5929,6 @@
 									"status": "OK",
 									"code": 200,
 									"_postman_previewlanguage": "JSON",
-									"_postman_previewtype": "html",
 									"header": [
 										{
 											"key": "Server",
@@ -6104,7 +5975,6 @@
 									"body": "{\"code\":\"0\",\"res\":{\"remindMsg\":\"\\u975e\\u6cd5\\u8bbf\\u95ee\"}}"
 								},
 								{
-									"id": "6326392f-dd4d-4943-81dd-a95db3214ccc",
 									"name": "筛选免费公开课",
 									"originalRequest": {
 										"method": "POST",
@@ -6221,7 +6091,6 @@
 									"status": "OK",
 									"code": 200,
 									"_postman_previewlanguage": "JSON",
-									"_postman_previewtype": "html",
 									"header": [
 										{
 											"key": "Server",
@@ -7020,7 +6889,6 @@
 							},
 							"response": [
 								{
-									"id": "a17829ec-56f3-43db-90b0-e4fa9c37a216",
 									"name": "筛选免费公开课",
 									"originalRequest": {
 										"method": "POST",
@@ -7137,7 +7005,6 @@
 									"status": "OK",
 									"code": 200,
 									"_postman_previewlanguage": "JSON",
-									"_postman_previewtype": "html",
 									"header": [
 										{
 											"key": "Server",
@@ -7145,7 +7012,7 @@
 										},
 										{
 											"key": "Date",
-											"value": "Thu, 30 May 2019 07:17:18 GMT"
+											"value": "Thu, 30 May 2019 08:04:37 GMT"
 										},
 										{
 											"key": "Content-Type",
@@ -7184,7 +7051,6 @@
 									"body": "{\"code\":\"0\",\"res\":{\"remindMsg\":\"\\u975e\\u6cd5\\u8bbf\\u95ee\"}}"
 								},
 								{
-									"id": "178bce60-1225-4e6a-81a2-5df1b2d1fb4d",
 									"name": "筛选免费公开课",
 									"originalRequest": {
 										"method": "POST",
@@ -7301,7 +7167,6 @@
 									"status": "OK",
 									"code": 200,
 									"_postman_previewlanguage": "JSON",
-									"_postman_previewtype": "html",
 									"header": [
 										{
 											"key": "Server",
@@ -7309,7 +7174,7 @@
 										},
 										{
 											"key": "Date",
-											"value": "Thu, 30 May 2019 08:04:37 GMT"
+											"value": "Thu, 30 May 2019 07:17:18 GMT"
 										},
 										{
 											"key": "Content-Type",
@@ -8511,7 +8376,6 @@
 		},
 		{
 			"name": "自动预约公开课",
-			"description": "",
 			"item": [
 				{
 					"name": "用户登录",
@@ -8623,33 +8487,27 @@
 							"query": [
 								{
 									"key": "version",
-									"value": "{{version}}",
-									"equals": true
+									"value": "{{version}}"
 								},
 								{
 									"key": "channel",
-									"value": "{{channel}}",
-									"equals": true
+									"value": "{{channel}}"
 								},
 								{
 									"key": "systemVer",
-									"value": "{{systemVer}}",
-									"equals": true
+									"value": "{{systemVer}}"
 								},
 								{
 									"key": "deviceId",
-									"value": "{{deviceId}}",
-									"equals": true
+									"value": "{{deviceId}}"
 								},
 								{
 									"key": "deviceType",
-									"value": "{{deviceType}}",
-									"equals": true
+									"value": "{{deviceType}}"
 								},
 								{
 									"key": "phoneType",
-									"value": "{{phoneType}}",
-									"equals": true
+									"value": "{{phoneType}}"
 								}
 							]
 						}
@@ -8739,33 +8597,27 @@
 							"query": [
 								{
 									"key": "version",
-									"value": "{{version}}",
-									"equals": true
+									"value": "{{version}}"
 								},
 								{
 									"key": "channel",
-									"value": "{{channel}}",
-									"equals": true
+									"value": "{{channel}}"
 								},
 								{
 									"key": "systemVer",
-									"value": "{{systemVer}}",
-									"equals": true
+									"value": "{{systemVer}}"
 								},
 								{
 									"key": "deviceId",
-									"value": "{{deviceId}}",
-									"equals": true
+									"value": "{{deviceId}}"
 								},
 								{
 									"key": "deviceType",
-									"value": "{{deviceType}}",
-									"equals": true
+									"value": "{{deviceType}}"
 								},
 								{
 									"key": "phoneType",
-									"value": "{{phoneType}}",
-									"equals": true
+									"value": "{{phoneType}}"
 								}
 							]
 						}
@@ -8776,7 +8628,6 @@
 		},
 		{
 			"name": "自动取消预约公开课",
-			"description": "",
 			"item": [
 				{
 					"name": "用户登录",
@@ -8888,33 +8739,27 @@
 							"query": [
 								{
 									"key": "version",
-									"value": "{{version}}",
-									"equals": true
+									"value": "{{version}}"
 								},
 								{
 									"key": "channel",
-									"value": "{{channel}}",
-									"equals": true
+									"value": "{{channel}}"
 								},
 								{
 									"key": "systemVer",
-									"value": "{{systemVer}}",
-									"equals": true
+									"value": "{{systemVer}}"
 								},
 								{
 									"key": "deviceId",
-									"value": "{{deviceId}}",
-									"equals": true
+									"value": "{{deviceId}}"
 								},
 								{
 									"key": "deviceType",
-									"value": "{{deviceType}}",
-									"equals": true
+									"value": "{{deviceType}}"
 								},
 								{
 									"key": "phoneType",
-									"value": "{{phoneType}}",
-									"equals": true
+									"value": "{{phoneType}}"
 								}
 							]
 						}
@@ -9011,33 +8856,27 @@
 							"query": [
 								{
 									"key": "version",
-									"value": "{{version}}",
-									"equals": true
+									"value": "{{version}}"
 								},
 								{
 									"key": "channel",
-									"value": "{{channel}}",
-									"equals": true
+									"value": "{{channel}}"
 								},
 								{
 									"key": "systemVer",
-									"value": "{{systemVer}}",
-									"equals": true
+									"value": "{{systemVer}}"
 								},
 								{
 									"key": "deviceId",
-									"value": "{{deviceId}}",
-									"equals": true
+									"value": "{{deviceId}}"
 								},
 								{
 									"key": "deviceType",
-									"value": "{{deviceType}}",
-									"equals": true
+									"value": "{{deviceType}}"
 								},
 								{
 									"key": "phoneType",
-									"value": "{{phoneType}}",
-									"equals": true
+									"value": "{{phoneType}}"
 								}
 							]
 						}
