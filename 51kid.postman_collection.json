@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "fae68471-3f3a-40e7-8ec0-89fa3a18b8fe",
 		"name": "51kid",
+		"description": "51talk青少APP　api test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -6513,6 +6514,133 @@
 							"response": []
 						},
 						{
+							"name": "首页验证课程信息",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8100725c-3215-467a-9ca2-bdc9cb58631a",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"//返回code是1,预约成功",
+											"jsonData=pm.response.json();",
+											"",
+											"pm.test(\"返回code是1\",function()",
+											"{",
+											"   pm.expect(jsonData.code).eql(1);",
+											"});",
+											"",
+											"//验证信息",
+											"pm.test(\"验证课程ID\",function()",
+											"{",
+											"    classId=pm.environment.get(\"openClassId\");",
+											"    pm.expect(jsonData.res.lessons.list[0].appointId.toString()).eql(classId);",
+											"});",
+											"",
+											"pm.test(\"验证老师ID\",function()",
+											"{",
+											"    teaId=pm.environment.get(\"teaId\");",
+											"    pm.expect(jsonData.res.lessons.list[0].teacherID.toString()).eql(teaId);",
+											"});",
+											"",
+											"pm.test(\"验证上课时间\",function()",
+											"{",
+											"    time=pm.environment.get(\"time\");",
+											"    pm.expect(jsonData.res.lessons.list[0].startTimestamp).eql(Number(time));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									}
+								],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "appkey",
+											"value": "{{appkey}}",
+											"type": "text"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"type": "text"
+										},
+										{
+											"key": "talk_token",
+											"value": "{{talkToken}}",
+											"type": "text"
+										},
+										{
+											"key": "timestamp",
+											"value": "{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "tsign",
+											"value": "{{tsign}}",
+											"type": "text"
+										},
+										{
+											"key": "userId",
+											"value": "{{userId}}",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/Schedule/getMyLessons?version={{version}}&channel={{channel}}&systemVer={{systemVer}}&deviceId={{deviceId}}&deviceType={{deviceType}}&phoneType={{phoneType}}",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"Schedule",
+										"getMyLessons"
+									],
+									"query": [
+										{
+											"key": "version",
+											"value": "{{version}}"
+										},
+										{
+											"key": "channel",
+											"value": "{{channel}}"
+										},
+										{
+											"key": "systemVer",
+											"value": "{{systemVer}}"
+										},
+										{
+											"key": "deviceId",
+											"value": "{{deviceId}}"
+										},
+										{
+											"key": "deviceType",
+											"value": "{{deviceType}}"
+										},
+										{
+											"key": "phoneType",
+											"value": "{{phoneType}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "取消公开课",
 							"event": [
 								{
@@ -7332,7 +7460,7 @@
 								{
 									"listen": "test",
 									"script": {
-										"type": "text/javascript",
+										"id": "8100725c-3215-467a-9ca2-bdc9cb58631a",
 										"exec": [
 											"pm.test(\"Status code is 200\", function () {",
 											"    pm.response.to.have.status(200);",
@@ -7350,21 +7478,22 @@
 											"pm.test(\"验证课程ID\",function()",
 											"{",
 											"    classId=pm.environment.get(\"openClassId\");",
-											"    pm.expect(jsonData.res.list[1].open_class_list[0].appointId.toString()).eql(classId);",
+											"    pm.expect(jsonData.res.lessons.list[0].appointId.toString()).eql(classId);",
 											"});",
 											"",
 											"pm.test(\"验证老师ID\",function()",
 											"{",
 											"    teaId=pm.environment.get(\"teaId\");",
-											"    pm.expect(jsonData.res.list[1].open_class_list[0].teacherID.toString()).eql(teaId);",
+											"    pm.expect(jsonData.res.lessons.list[0].teacherID.toString()).eql(teaId);",
 											"});",
 											"",
 											"pm.test(\"验证上课时间\",function()",
 											"{",
 											"    time=pm.environment.get(\"time\");",
-											"    pm.expect(jsonData.res.list[1].open_class_list[0].startTimestamp).eql(Number(time));",
+											"    pm.expect(jsonData.res.lessons.list[0].startTimestamp).eql(Number(time));",
 											"});"
-										]
+										],
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -7414,13 +7543,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{host}}/Experience/schedule?version={{version}}&channel={{channel}}&systemVer={{systemVer}}&deviceId={{deviceId}}&deviceType={{deviceType}}&phoneType={{phoneType}}",
+									"raw": "{{host}}/Schedule/getMyLessons?version={{version}}&channel={{channel}}&systemVer={{systemVer}}&deviceId={{deviceId}}&deviceType={{deviceType}}&phoneType={{phoneType}}",
 									"host": [
 										"{{host}}"
 									],
 									"path": [
-										"Experience",
-										"schedule"
+										"Schedule",
+										"getMyLessons"
 									],
 									"query": [
 										{
@@ -8884,6 +9013,185 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "apikey"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "ed01c091-ff00-47c0-b260-439345035919",
+				"type": "text/javascript",
+				"exec": [
+					"/*",
+					"* 注掉的原因是，",
+					"* 1、这里是全局类型的脚本，没必要把一些类似常量的东西每次都执行。",
+					"* 2、登录用户，不可能是固定一个，需要根据不同的业务使用不同的账号（比如体验课、付费课、oc课等等）；",
+					"* 可以考虑使用csv或者json Data，通过变量标记不同的用户；",
+					"* 3、不同登录用户的talkToken也不同，需要各自导入环境变量后，清除掉（不清楚也可以，下一个登录用户会覆盖）。",
+					"*/",
+					"// let username = '15811045057';",
+					"// let password = '111111';",
+					"",
+					"// postman.setEnvironmentVariable(\"phoneType\", \"iosKid\");",
+					"// postman.setEnvironmentVariable(\"systemVer\", \"12.0\");",
+					"// postman.setEnvironmentVariable(\"version\", \"2.4.0\");",
+					"// postman.setEnvironmentVariable(\"channel\", \"AppStore\");",
+					"// postman.setEnvironmentVariable(\"deviceType\", \"iPad\");",
+					"// postman.setEnvironmentVariable(\"deviceId\", \"b497a271133b4aa2b921334a1e61cace\");",
+					"// postman.setEnvironmentVariable(\"host\", \"http://appkidi.51talk.com\");",
+					"",
+					"// postman.setEnvironmentVariable(\"username\", username);",
+					"// postman.setEnvironmentVariable(\"password\",CryptoJS.MD5(password).toString() );",
+					"",
+					"var nowTime = Math.round(Date.now()/1000);",
+					"pm.environment.set(\"timestamp\",nowTime);",
+					"",
+					"//1、 定义指定源串1",
+					"var sourceString = '!08za$8gQKZCt^ME';",
+					"",
+					"//2、 获取源串2，按所有请求参数的key升序排列，然后将所有值（key=value）通过&符号连起来",
+					"// 2.1 获取post中的所有请求参数和值",
+					"// 2.2 获取get中的所有请求参数和值",
+					"var param = request.data;   //post 参数",
+					"var reqGetJson = pm.request.url.query.members;  //get中的参数",
+					"",
+					"// 反序列化body里面的参数为json",
+					"try {",
+					"  var json = JSON.parse(param);",
+					"  var reqPostJson = json;",
+					"  }catch(err){",
+					"  //BODY不是JSON格式",
+					"  }",
+					"",
+					"",
+					"var keyArr = [];",
+					"// 获取get参数的key",
+					"for(let key in reqGetJson){",
+					"    keyArr.push(key);",
+					"}",
+					"// 获取post参数的key",
+					"for(let key in reqPostJson){",
+					"    keyArr.push(key);",
+					"}",
+					"// 对合并后的key进行升序排列",
+					"var keySort = keyArr.sort();",
+					"var kvArr = [];",
+					"// 编码，并组装所有的参数（key=value）",
+					"for (let i of keySort){",
+					"    if (i === 'tsign'){",
+					"        continue;",
+					"    }",
+					"    else if (reqGetJson.hasOwnProperty(i)){",
+					"        kvArr.push(i+\"=\"+encodeURIComponent(reqGetJson[i]))",
+					"    }else{",
+					"        kvArr.push(i+\"=\"+encodeURIComponent(reqPostJson[i]))",
+					"    }",
+					"}",
+					"// 从数组转换为string",
+					"var sign = kvArr.join(\"&\");",
+					"sign = sign + sourceString;",
+					"// 使用md5，生成32为加密的字符串",
+					"var signCryp = CryptoJS.MD5(sign).toString();",
+					"console.log('the sign is', signCryp);",
+					"pm.environment.set(\"tsign\", signCryp);",
+					"/*",
+					"// -----------------",
+					"// ----------------",
+					"let salt = \"!08za$8gQKZCt^ME\";",
+					"let username = '15811045057';",
+					"let password = '111111';",
+					"postman.setEnvironmentVariable(\"phoneType\", \"iosKid\");",
+					"postman.setEnvironmentVariable(\"systemVer\", \"12.1.4\");",
+					"postman.setEnvironmentVariable(\"version\", \"2.1.0\");",
+					"postman.setEnvironmentVariable(\"channel\", \"AppStore\");",
+					"postman.setEnvironmentVariable(\"deviceType\", \"iPhone\");",
+					"postman.setEnvironmentVariable(\"deviceId\", \"9d65ebc26dee435ebd63b8228c17fc20\");",
+					"",
+					"postman.setEnvironmentVariable(\"username\", username);",
+					"postman.setEnvironmentVariable(\"password\",CryptoJS.MD5(password).toString() );",
+					"",
+					"let param = request.data;   //post 参数",
+					"let queryParam = pm.request.url.query.members;  //get中的参数",
+					"",
+					"",
+					"try {",
+					"  let json = JSON.parse(param); //序列化JSON BODY",
+					"  param = json;",
+					"  }catch(err){",
+					"  //BODY不是JSON格式",
+					"  }",
+					"",
+					"//Get & 合并GET和POST参数",
+					"for (let i in queryParam){",
+					"    param[queryParam[i].key] = queryParam[i].value;",
+					"}",
+					"",
+					"//Post",
+					"//取key",
+					"var keys = [];",
+					"for (let k in param){",
+					"    if (k == 'tsign'){",
+					"        continue;",
+					"    }",
+					"    keys.push(k);",
+					"    ",
+					"}",
+					"//排序",
+					"keys.sort();",
+					"",
+					"//取value",
+					"var kv = [];",
+					"for (let k of keys){",
+					"    kv.push(k + '=' + encodeURIComponent(param[k])) //urlencode编码",
+					"    ",
+					"}",
+					"",
+					"//拼接",
+					"var sign = kv.join('&');",
+					"sign = sign + salt;",
+					"console.log(sign);",
+					"sign = CryptoJS.MD5(sign).toString();",
+					"console.log(sign);",
+					"",
+					"//设置环境变量",
+					"postman.setEnvironmentVariable(\"tsign\", sign);",
+					"*/",
+					"",
+					"",
+					"",
+					"//格式化约课时间",
+					"function formatDate() ",
+					"{  ",
+					"    var date = new Date();",
+					"    date.setDate(date.getDate()+6);",
+					"    var y = date.getFullYear(); ",
+					"    var m = date.getMonth() + 1;  ",
+					"    m = m < 10 ? ('0' + m) : m; ",
+					"    var d = date.getDate();  ",
+					"    d = d < 10 ? ('0' + d) : d;",
+					"    return y + '-' + m + '-' + d;",
+					"}",
+					"var DD=formatDate();",
+					"postman.setEnvironmentVariable(\"date\", DD);",
+					"",
+					"//datestr=formatDate().tostring;",
+					"",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f3a4426f-d5c0-46bd-af36-638b71371df9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
