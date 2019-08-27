@@ -35,8 +35,8 @@
 											"    tel=pm.environment.get(\"regUsername\");",
 											"    //保存下一个注册的数据",
 											"    mob=(Number(tel)+1).toString();",
-											"   // pm.environment.set(\"mobile\",mob);",
-											"    pm.globals.set(\"regUser\", mob);",
+											"    pm.environment.set(\"mobile\",mob);",
+											"   // pm.globals.set(\"regUser\", mob);",
 											"});",
 											"",
 											"",
@@ -50,7 +50,11 @@
 									"script": {
 										"id": "a2c5e603-4884-48ae-a943-d30fcd5a0d8b",
 										"exec": [
-											"temp=pm.globals.get(\"regUser\");",
+											"temp=pm.environment.get(\"mobile\");",
+											"if(temp===0)",
+											"{",
+											"    temp ='190491000000'",
+											"}",
 											"pm.environment.set(\"regUsername\",temp );"
 										],
 										"type": "text/javascript"
